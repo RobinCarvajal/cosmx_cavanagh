@@ -2,7 +2,7 @@
 # Glas1055_1 --------------------------------------------------------------
 
 # load object
-org_1055_1 <- readRDS("F:\\CosMx_Analysis\\Flat_Files\\Slide_1055_1\\Glas1055_1\\slide_objects\\Glas1055_1_polygons_seuratObject.RDS")
+org_1055_1 <- readRDS("F:/CosMx_Analysis/Flat_Files/Slide_1055_1/Glas1055_1/slide_objects/Glas1055_1_polygons_seuratObject.RDS")
 
 ##### defining mouse_group #####
 org_1055_1$mouse_group <- "s1055"
@@ -58,7 +58,7 @@ saveRDS(org_1055_1, file.path(main_dir,"Objects_NO_QC","original_1055_1.RDS"))
 # Glas1055_2 --------------------------------------------------------------
 
 # load object
-org_1055_2 <- readRDS("F:\\CosMx_Analysis\\Flat_Files\\Slide_1055_2\\Glas1055_2\\Glas1055_2_polygons_seuratObject.RDS")
+org_1055_2 <- readRDS("F:/CosMx_Analysis/Flat_Files/Slide_1055_2/Glas1055_2/Glas1055_2_polygons_seuratObject.RDS")
 
 ##### defining mouse_group #####
 org_1055_2$mouse_group <- "s1055"
@@ -115,7 +115,7 @@ saveRDS(org_1055_2, file.path(main_dir,"Objects_NO_QC","original_1055_2.RDS"))
 # Glas1056_1 --------------------------------------------------------------
 
 # load object
-org_1056_1 <- readRDS("F:\\CosMx_Analysis\\Flat_Files\\Slide_1056_1\\Glas1056_1\\Glas1056_1_polygons_seuratObject.RDS")
+org_1056_1 <- readRDS("F:/CosMx_Analysis/Flat_Files/Slide_1056_1/Glas1056_1/Glas1056_1_polygons_seuratObject.RDS")
 
 ##### defining mouse_group #####
 org_1056_1$mouse_group <- "s1056"
@@ -173,7 +173,7 @@ saveRDS(org_1056_1, file.path(main_dir,"Objects_NO_QC","original_1056_1.RDS"))
 # Glas1056_2 --------------------------------------------------------------
 
 # load object
-org_1056_2 <- readRDS("F:\\CosMx_Analysis\\Flat_Files\\Slide_1056_2\\Glas1056_2\\Glas1056_2_polygons_seuratObject.RDS")
+org_1056_2 <- readRDS("F:/CosMx_Analysis/Flat_Files/Slide_1056_2/Glas1056_2/Glas1056_2_polygons_seuratObject.RDS")
 
 ##### defining mouse_group #####
 org_1056_2$mouse_group <- "s1056"

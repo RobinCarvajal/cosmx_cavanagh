@@ -1,4 +1,0 @@
-Add this to the top of runnable scripts
-
-# run in WSL
-source("/mnt/f/CosMx_Analysis/Set_up_WSL.R")
