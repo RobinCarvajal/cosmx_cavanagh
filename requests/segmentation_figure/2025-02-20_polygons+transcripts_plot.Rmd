@@ -1,0 +1,85 @@
+# Polygons + Transcripts plot
+
+Build Glas1055_1 Suerat Object with transcripts and polygons data
+
+```{r}
+obj <- readRDS("F:/cosmx_data/Flat_Files/seuratObject_Glas1055_1.RDS")
+```
+
+-   Subset the object metadata to include only fov62 cells Substract the x and y coordinates of the fov62 cells
+
+-   Use the min and max values to make the crop NOTE: if the object is subsetted, transcripts will not be plotted using `ImageDimPlot`
+
+-   `Crop()` function has to be used
+
+```{r}
+# fov 62 x coords
+fov62.x.coords <- subset(obj@meta.data, fov == 62)$x_slide_mm
+# keep only the min and max value 
+fov62.x.coords <- c(min(fov62.x.coords), max(fov62.x.coords))
+
+# fov 62 y coords
+fov62.y.coords <- subset(obj@meta.data, fov == 62)$y_slide_mm
+# keep only the min and max value
+fov62.y.coords <- c(min(fov62.y.coords), max(fov62.y.coords))
+
+```
+
+```{r}
+options(future.globals.maxSize = 10 * 1024^3) # 10 GB limit
+
+cropped.coords <- Crop(obj[["Glas1055_1"]], x = fov62.x.coords, y = fov62.y.coords , coords = "tissue")
+obj[["fov62"]] <- cropped.coords
+DefaultBoundary(obj[["fov62"]]) <- "segmentation"
+
+```
+
+Check the genes with the highest expression in the fov62 cells (for visualisation)
+
+```{r}
+# Sum the expression of each gene across all cells
+most_expressed <- rowSums(fov62@assays$RNA@counts)
+# top 9 genes (ImageDimPlot-polychrome can only plot 9 colors)
+top_9_genes <- names(head(most_expressed, 9))
+```
+
+Polygons only
+
+```{r}
+
+poly.pl <- ImageDimPlot(obj, fov="fov62", axes=T, flip_xy = F, cols="cyan", alpha=0.9)
+
+# save plot 
+out.dir <- "F:/cosmx_data/requests/segementation_figure"
+dir.create(out.dir, showWarnings = F) # create dir 
+out.path <- file.path(out.dir, "polygons_only.png")
+# save as png 
+ggsave(out.path, plot = poly.pl, width = 10, height = 10, units = "in", dpi = 300)
+# save as svg 
+out.path <- file.path(out.dir,"polygons_only.svg")
+svg(out.path, width = 10, height = 10)  # Width and height in inches
+poly.pl
+dev.off()
+
+
+```
+
+Polygons + Transcripts
+
+```{r}
+poly_trans.pl <- ImageDimPlot(obj, fov="fov62", axes=T, molecules = top_genes[1:9], flip_xy = F, cols="polychrome", mols.size=1)
+
+# save plot 
+out.dir <- "F:/cosmx_data/requests/segementation_figure"
+dir.create(out.dir, showWarnings = F) # create dir 
+out.path <- file.path(out.dir, "polygons+transcripts.png")
+# save as png 
+ggsave(out.path, plot = poly_trans.pl, width = 10, height = 10, units = "in", dpi = 300)
+# save as svg 
+out.path <- file.path(out.dir,"polygons+transcripts.svg")
+svg(out.path, width = 10, height = 10)  # Width and height in inches
+poly_trans.pl
+dev.off()
+```
+
+

@@ -1,0 +1,74 @@
+# Pseudo-Bulk [Regions]
+
+## brain object
+
+```{r }
+# Loading anterior brain object
+brain <- readRDS(file.path(data_dir,"objects", "brain_objects",
+                           "2025_01_22_brain_v1.7_added_mouse_id.RDS"))
+
+```
+
+## Define regions of interest
+```{r}
+roi <- c("anterior_cingulate_area",
+         #"caudoputamen",
+         "nucleus_accumbens",
+         "thalamus",
+         "hippocampus",
+         "motor_areas",
+         "agranular_insular_area",
+         "amygdala")
+```
+
+keep cells from the regions of interest
+```{r subset_ant, message=FALSE, warning=FALSE}
+#roi.sub <- subset(brain, regions.major %in% roi)
+
+roi.cells <- brain@meta.data %>%
+  filter(regions.major %in% roi) %>%
+  row.names()
+```
+
+add cells from anterior caudoputamen - reason: overlap with 
+```{r}
+ant_caudoputamen.cells <- brain@meta.data%>%
+  filter(regions.major == "caudoputamen" & slice_position == "ant") %>%
+  row.names()
+```
+update roi cells 
+```{r}
+roi.cells <- c(roi.cells, ant_caudoputamen.cells)
+```
+
+subset the object with only roi cells 
+```{r subset_ant, message=FALSE, warning=FALSE}
+roi.sub <- subset(brain, cells = roi.cells)
+```
+
+## Defining group variables to aggregate data
+
+```{r}
+
+group_vars <- c("regions.major",
+                "mouse_id",
+                "slice_position",
+                "condition")
+
+```
+
+
+### Pseudo Bulking
+
+```{r}
+
+# using custom function
+pseudo_brain <- PseudoBulk_fn(obj = roi.sub,
+                              vars = group_vars)
+
+# save the pseudo object
+saveRDS(object = pseudo_brain, 
+        file = file.path(data_dir,"regional",
+                        "regions.major_pseudo_bulk_roi.RDS"))
+
+```

@@ -1,0 +1,88 @@
+---
+output: html_document
+---
+# DESeq2 Astrocytes - position+condition
+
+## Libraries
+```{r setup, message=FALSE, warning=FALSE}
+library(DESeq2)
+
+```
+
+## Load data
+
+```{r Loading data}
+
+base_dir <- "F:/cosmx_data/broad_single_cell/differential_expression/position+condition/Astrocytes"
+# load em 
+counts <- read.table(file.path(base_dir, "em_Astrocytes.tsv"), header = T, sep = "\t", row.names = 1)
+# load ss
+ss <- read.table(file.path(base_dir, "ss_Astrocytes.tsv"), header = T, sep = "\t", row.names = 1)
+```
+
+## Filtering
+
+```{r Filtering}
+counts <- subset(counts,apply(counts, 1, mean) >= 1)
+```
+
+## Processing
+
+The design formula `~ position + condition + position:condition` in DESeq2 includes:
+
+`position`: This accounts for any systematic differences due to position. `condition`: This models the primary effect of the condition after controlling for position. `position:condition`: This interaction term allows the effect of condition to vary depending on position.
+
+```{r Processing}
+
+# create DESeq object
+dds <- DESeqDataSetFromMatrix(countData = counts, 
+                              colData = ss,
+                              design = ~  sample_group)
+
+
+```
+
+Here, we referene values is set to `C` and `ant` for `condition` and `position` respectively.
+
+```{r}
+# setting  reference condition
+dds$sample_group <- relevel(dds$sample_group, ref = "ant_C")
+
+```
+
+Running DESeq2
+
+```{r}
+
+# Run DESEQ2
+dds <- DESeq(dds)
+
+```
+
+Checking coeficients
+
+```{r}
+# check coef
+resultsNames(dds)
+
+```
+
+## Checking interaction
+
+posA vs posC
+
+```{r}
+# results
+res <- results(dds, contrast =c("sample_group", "ant_A", "pos_A"))
+res_df <- data.frame(res)
+
+# order the df by padj value lower to higher 
+res_df <- res_df[order(res_df$padj, decreasing = F),]
+
+# print first 5 values
+head(res_df)
+```
+
+## Conclusion
+
+There are NO genes that are uniquely changing in posterior slice samples due to Aldara treatment in ASTROCYTE cells.

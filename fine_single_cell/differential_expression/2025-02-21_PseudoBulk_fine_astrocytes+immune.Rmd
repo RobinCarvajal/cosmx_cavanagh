@@ -1,0 +1,52 @@
+# Pseudo-Bulk [Cell types]
+
+## Define cell types of interest
+
+```{r}
+celltypes <- c("Astrocytes_0", "Astrocytes_1", "Astrocytes_2", "Astrocytes_3", "Astrocytes_4",
+               "Immune_0", "Immune_1", "Immune_2", "Immune_3", "Immune_4")
+```
+
+## Defining group variables to aggregate data
+
+```{r}
+
+group_vars <- c("fine.labels",
+                "mouse_id",
+                "slice_position",
+                "condition")
+
+```
+
+## brain object
+
+```{r}
+# Loading brain object
+brain <- readRDS(file.path(data_dir,"objects", "brain_objects",
+                           "2025_01_22_brain_v1.7_added_mouse_id.RDS"))
+
+```
+
+### subsetting object to include only cell types of interest
+
+```{r subset_ant, message=FALSE, warning=FALSE}
+
+# keep cells from the regions of interest
+celltypes.sub <- subset(brain, fine.labels %in% celltypes)
+
+```
+
+### Pseudo Bulking
+
+```{r}
+
+# using custom function
+pseudo_brain <- PseudoBulk_fn(obj = celltypes.sub,
+                              vars = group_vars)
+
+# save the pseudo object
+saveRDS(object = pseudo_brain, 
+        file = file.path(data_dir,"fine_single_cell",
+                        "fine.labels_pseudo_bulk_astro+immune.RDS"))
+
+```

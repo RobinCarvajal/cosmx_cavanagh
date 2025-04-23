@@ -1,0 +1,28 @@
+# Adding mouse_id to the metadata
+
+```{r}
+
+# load data
+brain <- readRDS(file.path(data_dir,"objects", "brain_objects", 
+                           "2025_01_22_brain_v1.7_region.labels_added.RDS"))
+
+```
+
+Need to add mouse_id to account for the fact that the anterior and posterior slices come from the same mice n=8 not 16
+```{r}
+# extract meta
+meta <- brain@meta.data
+
+# create mouse_id
+meta$mouse_id <- paste0(meta$mouse_group, meta$brain_slice)
+
+# replace metadata in brain 
+brain <- AddMetaData(brain, meta)
+
+```
+Save the object 
+```{r}
+# save the object
+saveRDS(brain, file.path(data_dir,"objects", "brain_objects", 
+                           "2025_01_22_brain_v1.7_added_mouse_id.RDS"))
+```

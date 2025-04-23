@@ -1,0 +1,188 @@
+# Neurotransmission Genes Heatmap
+
+Loading libraries
+```{r}
+library(ggplot2)
+library(ggrepel)
+library(reshape)
+library(ggridges)
+library(amap)
+library(grid)
+library(gridExtra)
+library(gtable)
+library(ggplotify)
+```
+
+DE sample and group names 
+```{r}
+
+samples = c("S1055BS1_POS_C","S1055BS2_POS_C","S1056BS1_POS_C","S1056BS2_POS_C","S1055BS3_POS_A","S1055BS4_POS_A","S1056BS3_POS_A","S1056BS4_POS_A")
+sample_groups = c("POS_C","POS_A")
+sample_groups = factor(sample_groups, levels = sample_groups)
+sample_groupings = c("POS_C","POS_C","POS_C","POS_C","POS_A","POS_A","POS_A","POS_A")
+sample_groupings = factor(sample_groupings, levels = sample_groups)
+samples_by_sample_group = list(c("S1055BS1_POS_C","S1055BS2_POS_C","S1056BS1_POS_C","S1056BS2_POS_C"),c("S1055BS3_POS_A","S1055BS4_POS_A","S1056BS3_POS_A","S1056BS4_POS_A"))
+comparisons = c("POS_A vs POS_C")
+
+```
+
+Set paths
+```{r}
+wd <- list(
+  #amygdala = "F:/cosmx_data/regional/differential_expression/condition/posterior/amygdala/SL2_results/all_genes/de_workflows/POS_A_vs_POS_C",
+  #hippocampus = "F:/cosmx_data/regional/differential_expression/condition/posterior/hippocampus/SL2_results/all_genes/de_workflows/POS_A_vs_POS_C", 
+  motor.areas = "F:/cosmx_data/regional/differential_expression/condition/posterior/motor.areas/SL2_results/all_genes/de_workflows/POS_A_vs_POS_C",
+  thalamus = "F:/cosmx_data/regional/differential_expression/condition/posterior/thalamus/SL2_results/all_genes/de_workflows/POS_A_vs_POS_C"
+  )
+
+print(wd)
+```
+
+Neurotransmission genes
+```{r}
+neurotransmission_genes=read.csv("F:/cosmx_data/requests/heatmaps/neurotransmission_genes.csv", header=F)
+neurotransmission_genes=neurotransmission_genes$V1
+
+print(neurotransmission_genes)
+```
+
+DE input files
+```{r}
+
+de_tables <- list()
+
+for (region in names(wd)){
+  print(region)
+  
+  table.path <- file.path(wd[[region]],"data/de_annotated.csv")
+  region_table <- read.table(table.path, header=TRUE,row.names = 2, sep='\t', quote='',check.names = TRUE)
+  # subset the neurotranmission genes only
+  neurotransmission_genes_table= region_table[neurotransmission_genes,]
+  
+  de_tables[[region]] <- neurotransmission_genes_table
+  
+}
+
+```
+
+de parse ne matrix
+```{r}
+matrix_tables <- list()
+
+for (region in names(de_tables)){
+  
+  print(region)
+  region_table <- de_tables[[region]]
+  ne_matrix = region_table[,samples]
+  
+  matrix_tables[[region]] <- ne_matrix
+  
+}
+
+
+```
+
+Transpose and scale significant genes ne matrix
+```{r}
+
+scaled_matrix_tables <- list()
+
+for (region in names(matrix_tables)){
+  
+  print(region)
+  
+  ne_matrix <- matrix_tables[[region]]
+  ne_matrix_scaled <- data.frame(t(scale(t(ne_matrix))))
+  rownames(ne_matrix_scaled) = rownames(ne_matrix)
+  ne_matrix_scaled[do.call(cbind, lapply(ne_matrix_scaled, is.nan))] <- 0
+  ne_matrix_scaled = ne_matrix_scaled[is.finite(rowSums(ne_matrix_scaled)), ]
+  
+  scaled_matrix_tables[[region]] <- ne_matrix_scaled
+  
+  }
+
+
+```
+
+Default Three tome Heatmap Colour
+```{r}
+default_three_tone_heatmap_colours = c("purple","black","yellow")
+```
+
+Default Sample Labels
+```{r}
+default_sample_labels = gsub("_"," ",c("S1055BS1_POS_C","S1055BS2_POS_C","S1056BS1_POS_C","S1056BS2_POS_C","S1055BS3_POS_A","S1055BS4_POS_A","S1056BS3_POS_A","S1056BS4_POS_A")) # note: changing this won't change the order the samples appear on the plots. Merely what they are labelled as.
+
+```
+
+Default Sample and Sample Groups
+```{r}
+number_of_sample_groups = length(sample_groups)
+default_sample_group_colours = gg_color_hue(number_of_sample_groups)
+default_samples_colours = c(default_sample_group_colours[1],default_sample_group_colours[1],default_sample_group_colours[1],default_sample_group_colours[1],default_sample_group_colours[2],default_sample_group_colours[2],default_sample_group_colours[2],default_sample_group_colours[2])
+
+```
+
+Significant Genes Heatmap
+```{r}
+plot_height = 2000
+plot_width = 500
+colours = default_three_tone_heatmap_colours
+sample_names = default_sample_labels
+distance_method = "spearman"
+clustering_method = "average"
+reorder_function = "average"
+
+cluster_x = FALSE
+cluster_y = TRUE
+
+for (region in names(scaled_matrix_tables)){
+  
+  print(region)
+  
+  ne_scaled_matrix <- scaled_matrix_tables[[region]]
+  
+  ggp <- make_significant_genes_heatmap(ne_scaled_matrix,colours,sample_names,cluster_x,cluster_y,distance_method,clustering_method,reorder_function, sample_groupings, default_samples_colours)
+  
+  # out path 
+  out <- file.path(data_dir, "requests", "neurotransmission_genes_heatmaps", "posterior", region)
+  if (!dir.exists(out)) dir.create(out, recursive = TRUE)
+  file.name <- file.path(out, "neurotransmission_genes_heatmap.png")
+  save_plot(ggp,plot_height,plot_width,file.name)
+  
+  
+}
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
