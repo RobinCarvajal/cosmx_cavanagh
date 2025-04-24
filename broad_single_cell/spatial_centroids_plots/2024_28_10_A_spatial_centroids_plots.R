@@ -1,6 +1,6 @@
 # read the object
-brain <- readRDS(file.path(main_dir, "New_Analysis","objects",
-                           "26_10_2024_brain_v1.4_polygons_corrected.RDS"))
+brain <- readRDS(file.path(data_dir, "objects","brain_objects",
+                           "2025_01_22_brain_v1.7_region.labels_added.RDS"))
 
 
 # create a spatial plot of each cell cluster in each image 
