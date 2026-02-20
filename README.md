@@ -1,2 +1,9 @@
-# cosmx_cavanagh
- Code used for processing and visualisation of Cavanagh Lab CosMx dataset.
+Code used for processing and visualisation of Cavanagh Lab CosMx dataset.
+
+# Neuroinflammation driven by TLR7 activation in mice results in a global inflammatory response driving circuit-specific changes in neuronal gene expression
+Kirstyn Gardner-Stephen, Robin J Carvajal-Quisilema, ProfileLilya Andrianova, Rhona McGonigal, Deepika Sharma, Jennifer A Barrie, Megan Saathoff, John J Cole, Nigel B Jamieson, Michael T Craig, Jonathan T Cavanagh
+
+## Abstract 
+Interactions between the brain and immune system play a key role in the aetiology of brain disorders, with inflammation emerging as a potential causal factor in subsets of major depressive disorder, particularly those resistant to treatment. The causal mechanisms through which immune activation can drive depressive symptoms remain elusive, limiting the ability to develop new targeted therapies. Using a mouse model of neuroinflammation, involving a TLR7/8 agonist, we found central and systemic inflammation alongside anhedonia-like behaviours, altered thalamostriatal signalling and infiltration of peripheral immune cells into the brain. Here, we sought to use combined whole-brain transcriptome and spatial transcriptomics approaches to determine whether Aldara-driven neuroinflammation resulted in consistent immune and neurobiological changes throughout the brain. We found evidence of strong immune activation throughout the brain, with astrocytes displaying a strong inflammatory profile that was relatively uniform throughout. However, we found that this global inflammatory signal led to regionally-specific changes in gene expression, particularly reduced expression of genes associated with synaptic function in brain areas underlying mood and anxiety, such as ventral striatum and amygdala. Our data suggest potential mechanisms through which astrocytes regulate neuronal function in response to inflammation.
+
+doi: https://doi.org/10.1101/2025.04.25.650583
